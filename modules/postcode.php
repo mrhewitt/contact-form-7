@@ -61,12 +61,18 @@ function wpcf7_postcode_shortcode_handler($tag) {
 			<div>Postcode</div>
 			<input type="text" name="wp7cf_postcode_code" maxlength="8" style="text-transform:uppercase;width:128px;margin-right:6px" /><button onclick="wp7cf_postcode_lookup(jQuery(this));return false;">Lookup</button>
 			<div class="wpcf7-postcode-address" style="display:none">
+				<div class="wp7cf_postcode_premesis_wrap">
+					<div>Premesis</div>
+					<div><select name="wp7cf_postcode_premesis"></select></div>
+				</div>
 				<div>Address Line 1</div>
-				<div><input type="text" name="wp7cf_postcode_addr1"/></div>
+				<div><input type="text" name="wp7cf_postcode_addr1" readonly /></div>
 				<div>Address Line 2</div>
-				<div><input type="text" name="wp7cf_postcode_addr2"/></div>
+				<div><input type="text" name="wp7cf_postcode_addr2" readonly /></div>
+				<div>Town</div>
+				<div><input type="text" name="wp7cf_postcode_town" readonly /></div>
 				<div>County</div>
-				<div><input type="text" name="wp7cf_postcode_county"/></div>
+				<div><input type="text" name="wp7cf_postcode_county" readonly /></div>
 			</div>
 		</div>',
 		sanitize_html_class( $tag->name ), $atts, $validation_error );
@@ -85,7 +91,20 @@ add_action( 'wp_ajax_wpcf7_postcode_lookup', 'wpcf7_postcode_lookup' );
 add_action( 'wp_ajax_nopriv_wpcf7_postcode_lookup', 'wpcf7_postcode_lookup' );
 
 function wpcf7_postcode_lookup() {
+	// fetch the data from the postcode SDK
 	$data = file_get_contents('http://ws1.postcodesoftware.co.uk/lookup.asmx/getAddress?account=test1&password=test1&postcode='.urlencode($_POST['postcode']));
-	echo json_encode(simplexml_load_string($data));
+	// parse the xml so we can do some processing on the address and convert to JSON
+	$address = (array)simplexml_load_string($data);
+
+	// if there is premise data, expand this into an array for easy processing in JS
+	if ( !empty($address['PremiseData']) ) {
+		$address['PremiseData'] = explode(';',$address['PremiseData']);
+		foreach ( $address['PremiseData'] as &$premise ) {
+			$premise = str_replace( array('/',' <br> ','|'), ', ', trim($premise,'|'));
+		}
+	}
+	
+	// give out API consumer a JSON block in response
+	echo json_encode($address);
 	wp_die();
 }
