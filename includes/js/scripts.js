@@ -138,9 +138,16 @@
 		$(data.into).trigger('wpcf7:submit');
 		$(data.into).trigger('submit.wpcf7'); // deprecated
 
-		if (1 == data.mailSent)
+		if (1 == data.mailSent) {
 			$form.resetForm();
-
+			// hide the form postcode fields (bit of a hack right now)
+			$form.find('.wpcf7-postcode-address').hide();
+			// if there is a postcode field, stop this form from being resubmitted until they pick a new postcode
+			if ( $form.find('.wpcf7-postcode-address').length > 0 ) {
+				$form.find('input[type=submit]').attr('disabled','disabled');
+			}
+		}
+		
 		$form.find('[placeholder].placeheld').each(function(i, n) {
 			$(n).val($(n).attr('placeholder'));
 		});
