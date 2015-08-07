@@ -40,7 +40,7 @@ function wp7cf_postcode_lookup(self) {
 
 		} else {
 			wrap.find('.wpcf7-postcode-address').css({display:'none'});
-			alert(response.ErrorMessage);
+			alert(response.ErrorMessage.replace('error ',''));
 		}
 	},'json');
 }
@@ -69,4 +69,14 @@ jQuery(document).ready( function() {
 								wrap.closest('form').find('input[type=submit]').attr('disabled','disabled');
 							}
 					}); 
+	// handle typing into the text box, if it is not empty then enable the lookup button
+	jQuery('.wpcf7-form-control-wrap.wpcf7-form-postcode-enabled').on('keyup',
+					 'input[name=wp7cf_postcode_code]',
+					 function() {
+						if ( jQuery(this).val() == '' ) {
+							jQuery(this).next('button').attr('disabled','disabled');
+						} else {
+							jQuery(this).next('button').attr('disabled',false).removeAttr('disabled');
+						}
+					});
 });

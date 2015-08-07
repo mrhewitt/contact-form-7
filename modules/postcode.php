@@ -56,29 +56,29 @@ function wpcf7_postcode_shortcode_handler($tag) {
 	$atts = wpcf7_format_atts( $atts );
 
 	$html = sprintf(
-		'<div class="wpcf7-form-control-wrap wpcf7-form-postcode-enabled">
+		'<span style="display:block" class="wpcf7-form-control-wrap wpcf7-form-postcode-enabled">
 			<input type="hidden" name="'.sanitize_html_class($tag->name).'" />
-			<div>Postcode</div>
+			<span style="display:block">Postcode*</span>
 			<input type="text" name="wp7cf_postcode_code" maxlength="8" style="text-transform:uppercase;width:128px;margin-right:6px" />
-			<button onclick="wp7cf_postcode_lookup(jQuery(this));return false;">Lookup</button>
+			<button onclick="wp7cf_postcode_lookup(jQuery(this));return false;" style="display:inline-block" disabled class="btn btn-link">Lookup</button>
 			<img class="ajax-loader" src="'.wpcf7_ajax_loader().'" alt="Checking..." style="display: none;">
-			<div class="wpcf7-postcode-address" style="display:none">
-				<div class="wp7cf-ostcode-choice-wrap">
-					<div>Select Address</div>
-					<div><select name="wp7cf_postcode_premesis"></select></div>
-				</div>
-				<div class="wp7cf-postcode-address-wrap">
-					<div>Address Line 1</div>
-					<div><input type="text" name="wp7cf_postcode_addr1" readonly /></div>
-					<div>Address Line 2</div>
-					<div><input type="text" name="wp7cf_postcode_addr2" readonly /></div>
-					<div>Town</div>
-					<div><input type="text" name="wp7cf_postcode_town" readonly /></div>
-					<div>County</div>
-					<div><input type="text" name="wp7cf_postcode_county" readonly /></div>
-				</div>
-			</div>
-		</div>',
+			<span class="wpcf7-postcode-address" style="display:none">
+				<span style="display:block" class="wp7cf-ostcode-choice-wrap">
+					<span style="display:block">Select Address</span>
+					<span style="display:block"><select name="wp7cf_postcode_premesis"></select></span>
+				</span>
+				<span style="display:block" class="wp7cf-postcode-address-wrap">
+					<span style="display:block">Address Line 1</span>
+					<span style="display:block"><input type="text" name="wp7cf_postcode_addr1" readonly /></span>
+					<span style="display:block">Address Line 2</span>
+					<span style="display:block"><input type="text" name="wp7cf_postcode_addr2" readonly /></span>
+					<span style="display:block">Town</span>
+					<span style="display:block"><input type="text" name="wp7cf_postcode_town" readonly /></span>
+					<span style="display:block">County</span>
+					<span style="display:block"><input type="text" name="wp7cf_postcode_county" readonly /></span>
+				</span>
+			</span>
+		</span>',
 		sanitize_html_class( $tag->name ), $atts, $validation_error );
 	
 	return $html;
