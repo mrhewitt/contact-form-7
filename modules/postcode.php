@@ -112,3 +112,50 @@ function wpcf7_postcode_lookup() {
 	echo json_encode($address);
 	wp_die();
 }
+
+
+
+/* Tag generator */
+
+if ( is_admin() ) {
+	add_action( 'admin_init', 'wpcf7_add_tag_generator_postcode', 55 );
+}
+
+function wpcf7_add_tag_generator_postcode() {
+	$tag_generator = WPCF7_TagGenerator::get_instance();
+	$tag_generator->add( 'postcode', __( 'postcode', 'contact-form-7' ),
+		'wpcf7_tag_generator_postcode', array( 'nameless' => 1 ) );
+}
+
+function wpcf7_tag_generator_postcode( $contact_form, $args = '' ) {
+	$args = wp_parse_args( $args, array() );
+
+	$description = __( "Generate a form-tag for a postcode lookup field.", 'contact-form-7' );
+	$desc_link = "";
+?>
+<div class="control-box">
+<fieldset>
+<legend><?php echo sprintf( esc_html( $description ), $desc_link ); ?></legend>
+
+<table class="form-table">
+<tbody>
+
+	<tr>
+	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-name' ); ?>"><?php echo esc_html( __( 'Name', 'contact-form-7' ) ); ?></label></th>
+	<td><input type="text" name="name" class="tg-name oneline" id="<?php echo esc_attr( $args['content'] . '-name' ); ?>" /></td>
+	</tr>
+
+</tbody>
+</table>
+</fieldset>
+</div>
+
+<div class="insert-box">
+	<input type="text" name="postcode" class="tag code" readonly="readonly" onfocus="this.select()" />
+
+	<div class="submitbox">
+	<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'contact-form-7' ) ); ?>" />
+	</div>
+</div>
+<?php
+}
