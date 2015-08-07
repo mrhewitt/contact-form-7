@@ -102,9 +102,23 @@ function wpcf7_postcode_lookup() {
 
 	// if there is premise data, expand this into an array for easy processing in JS
 	if ( !empty($address['PremiseData']) ) {
-		$address['PremiseData'] = explode(';',$address['PremiseData']);
+		$address['PremiseData'] = explode(';',trim($address['PremiseData'],';'));
 		foreach ( $address['PremiseData'] as &$premise ) {
-			$premise = str_replace( array('/',' <br> ','|'), ', ', trim($premise,'|'));
+			if ( !empty($premise) ) { 
+				$parts = explode('|',trim($premise,'|'));
+				$final_premise = array();
+				foreach ( $parts as $p ) {
+					if ( !empty($p) ) {
+						$final_premise[] = str_replace( array('/',' <br> ','|'), ', ', $p);
+					}
+				}
+				// if the last piece of a premisis is not a street number, we append a , so it looks better
+				// ie.. Flat 3, Priestley Court, Cornmill View   as opposed to 18 St George Street
+				if ( !is_numeric(end($final_premise)) ) {
+					$final_premise[key($final_premise)] .= ',';
+				}
+				$premise = join(', ',$final_premise);
+			}
 		}
 	}
 	
